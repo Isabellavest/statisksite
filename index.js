@@ -1,32 +1,32 @@
-fetch("https://kea-alt-del.dk/t7/api/categories")
+const categoryURL = "https://kea-alt-del.dk/t7/api/categories";
+const container = document.querySelector(".categories");
+
+fetch(categoryURL)
   .then((res) => res.json())
   .then(showCategories);
 
-const categoryImages = {
-  Accessories: "images/hat.webp",
-  Apparel: "images/modeller.webp",
-  Footwear: "images/sko.webp",
-  "Free Items": "images/scarf.webp",
-  "Personal Care": "images/skincare.webp",
-  "Sporting Goods": "images/surf.webp",
-};
-
 function showCategories(categories) {
-  const container = document.querySelector(".categories");
   container.innerHTML = "";
 
   categories.forEach((cat) => {
-    const img = categoryImages[cat.category] || "images/modeller.webp";
+    const productsURL = `https://kea-alt-del.dk/t7/api/products?category=${cat.category}&limit=1`;
 
-    const markup = `
-      <a class="hb-tile" href="productlist.html?category=${encodeURIComponent(
-        cat.category,
-      )}">
-        <img src="${img}" alt="${cat.category}" />
-        <span class="hb-label">${cat.category}</span>
-      </a>
-    `;
+    fetch(productsURL)
+      .then((res) => res.json())
+      .then((products) => {
+        const product = products[0];
 
-    container.insertAdjacentHTML("beforeend", markup);
+        // fallback hvis en kategori ikke har produkter
+        const imgSrc = product
+          ? `https://kea-alt-del.dk/t7/images/webp/640/${product.id}.webp`
+          : "images/bro.webp";
+
+        container.innerHTML += `
+          <a class="hb-tile" href="productlist.html?category=${cat.category}">
+            <img src="${imgSrc}" alt="${cat.category}" />
+            <span class="hb-label">${cat.category}</span>
+          </a>
+        `;
+      });
   });
 }
