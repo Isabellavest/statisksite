@@ -356,33 +356,6 @@ h2 {
   font-weight: 800;
 }
 
-/************ BADGES ***********/
-.badge {
-  position: absolute;
-  top: 12px;
-  font-size: 12px;
-  font-weight: 800;
-  padding: 6px 10px;
-  border-radius: 999px;
-  z-index: 2;
-}
-
-.soldout-badge {
-  left: 12px;
-  background: #2b2b2b;
-  color: #fff;
-}
-
-.discount-badge {
-  right: 12px;
-  background: #d94a3a;
-  color: #fff;
-}
-
-.soldout .product-media img {
-  filter: grayscale(1) brightness(0.92);
-}
-
 /************ PRODUCT PAGE ***********/
 .product-page {
   padding: 16px;
