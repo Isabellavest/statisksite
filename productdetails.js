@@ -1,47 +1,36 @@
-const params = new URLSearchParams(location.search);
-const id = params.get("id");
+const id = new URLSearchParams(location.search).get("id");
+const url = `https://kea-alt-del.dk/t7/api/products/${id}`;
 
-const productURL = "https://kea-alt-del.dk/t7/api/products/" + id;
-const productcontainer = document.querySelector(".product-page");
+fetch(url)
+  .then((res) => res.json())
+  .then(showProduct);
 
-function getData() {
-  fetch(productURL).then((res) => res.json().then((data) => show(data)));
-}
-
-function show(data) {
+function showProduct(p) {
   // billede
-  document.querySelector(".product-page-media img").src =
-    "https://kea-alt-del.dk/t7/images/webp/640/" + data.id + ".webp";
-  document.querySelector(".product-page-media img").alt =
-    data.productdisplayname;
+  const img = document.querySelector(".product-page-media img");
+  img.src = `https://kea-alt-del.dk/t7/images/webp/640/${p.id}.webp`;
+  img.alt = p.productdisplayname;
 
   // titel + brand
-  document.querySelector(".product-title").textContent =
-    data.productdisplayname;
-  document.querySelector(".product-meta").textContent =
-    "Brand: " + data.brandname;
+  document.querySelector(".product-title").textContent = p.productdisplayname;
+  document.querySelector(".product-meta").textContent = `Brand: ${p.brandname}`;
 
-  // pris (med evt. discount)
-  const priceNow = document.querySelector(".price-now");
-  const priceOld = document.querySelector(".price-old");
+  // pris
+  const now = document.querySelector(".price-now");
+  const old = document.querySelector(".price-old");
 
-  if (data.discount && Number(data.discount) > 0) {
-    const newPrice = Math.round(
-      data.price - (data.price * data.discount) / 100,
-    );
-    priceNow.textContent = newPrice + " kr.";
-    priceOld.textContent = data.price + " kr.";
-    priceOld.style.display = "inline";
-  } else {
-    priceNow.textContent = data.price + " kr.";
-    if (priceOld) priceOld.style.display = "none";
-  }
+  const hasDiscount = p.discount && Number(p.discount) > 0;
+  const newPrice = hasDiscount
+    ? Math.round(p.price * (1 - p.discount / 100))
+    : p.price;
+
+  now.textContent = `${newPrice} kr.`;
+  old.textContent = `${p.price} kr.`;
+  old.style.display = hasDiscount ? "inline" : "none";
 
   // lagerstatus
   const status = document.querySelector(".status");
-  status.textContent = data.soldout ? "Sold out" : "På lager";
-  status.classList.toggle("out", data.soldout);
-  status.classList.toggle("in", !data.soldout);
+  status.textContent = p.soldout ? "Sold out" : "På lager";
+  status.classList.toggle("out", p.soldout);
+  status.classList.toggle("in", !p.soldout);
 }
-
-getData();
