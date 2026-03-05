@@ -17,9 +17,7 @@ function showCategories(categories) {
         const product = products[0];
 
         // fallback hvis en kategori ikke har produkter
-        const imgSrc = product
-          ? `https://kea-alt-del.dk/t7/images/webp/640/${product.id}.webp`
-          : "images/bro.webp";
+        const imgSrc = `https://kea-alt-del.dk/t7/images/webp/640/${product.id}.webp`;
 
         container.innerHTML += `
           <a class="hb-tile" href="productlist.html?category=${cat.category}">
